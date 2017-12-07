@@ -24,6 +24,7 @@
 
 from oslo_config import cfg
 
+
 # Register the stanza
 opt_default_group = cfg.OptGroup(name='default', \
                                 title='Default Options')
@@ -62,6 +63,7 @@ database_opts = [
 
 
 CONF = cfg.CONF
+CONF(default_config_files=['config/nopaste.conf'])
 CONF.register_group(opt_default_group)
 CONF.register_opts(default_opts, opt_default_group)
 
@@ -72,11 +74,10 @@ CONF.default.host = CONF.default.uri.split(":")[1].split("//")[1]
 CONF.default.port = CONF.default.uri.split(":")[2]
 
 
-
-if __name__ == '__main__':
-    print(CONF.default.upload_folder)
-    #print(CONF.default.upload_folder)
-    #print(CONF.default.uri)
-    #print(CONF.default.debug)
-    #print(CONF.database.dbname)
-    #print(CONF.database.sql_engine_prefix)
+#if __name__ == '__main__':
+#print(CONF.default.upload_folder)
+#print(CONF.default.upload_folder)
+#print(CONF.default.uri)
+#print(CONF.default.debug)
+#print(CONF.database.dbname)
+#print(CONF.database.sql_engine_prefix)

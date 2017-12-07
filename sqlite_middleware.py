@@ -61,7 +61,7 @@ def _insert_user(user, session):
     session.commit()
 
 
-def _find_object(uid, session):
+def _find_objects(uid, session):
     result = session.query(Link).filter_by(uuid=uid).all()
     return result
 

@@ -24,7 +24,7 @@
 
 from flask import render_template, make_response, Response
 from bs4 import BeautifulSoup
-from config import CONF
+from datetime import datetime as dt, timedelta
 import logging
 
 LOG = logging.getLogger(__name__)
@@ -42,9 +42,24 @@ def render(resource, ua):
     return content
 
 
-def isexpired(t1):
+def is_expired(t1, expire_time):
     """
-    TBD: Define the mode of setting link expired
+    Define the mode of setting link expired
     """
-    print("The expire time is set to: %d\n" % int(CONF.default.expire_time))
-    pass
+    LOG.info("Timedelta seconds: %d\n" % int(expire_time))
+    now = dt.now()
+    link_dt = dt.strptime(t1, "%Y-%m-%d %H:%M:%S")
+
+    if abs(now - link_dt) > timedelta(seconds=expire_time):
+        LOG.info("[EXPIRED] - TRUE")
+        return True
+
+    LOG.info("[EXPIRED] - FALSE")
+    return False
+
+
+# JUST FOR TEST PURPOSES ...
+#print(is_expired("2017-12-01 20:32:00", 86400))
+#print(is_expired("2017-12-06 15:32:00", 86400))
+#print(is_expired("2017-12-07 20:32:00", 86400))
+#print(is_expired("2017-12-05 20:32:00", 86400))

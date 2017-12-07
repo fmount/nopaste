@@ -51,14 +51,14 @@ class UserAPI(Resource):
     def post(self):
         username = request.json.get('username')
         password = request.json.get('password')
-        
-        
+
+
         if username is None or password is None:
             abort(400)  # missing arguments
-       
+
         engine = create_engine(CONF.database.sql_engine_prefix + CONF.database.dbname)
         Session = sessionmaker(bind=engine)
-        
+
         print(password)
         if sqlite_middleware._get_user(username, Session()) is not None:
             print(username)

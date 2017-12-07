@@ -62,6 +62,7 @@ the more generic model called Link (you can find it on the model.py)
 """
 
 LOG = logging.getLogger(__name__)
+#logging.basicConfig(filename='/tmp/nopaste.log', level=logging.DEBUG)
 
 app = Flask(__name__, static_folder=CONF.default.upload_folder, static_url_path="")
 api = Api(app)
@@ -98,10 +99,12 @@ def home():
 def show_me_thefile(url):
     identifier = Shorturl.toBase10(url)
     LOG.info("Resolved identifier: %s\n" % str(identifier))
-
+    
     Session = sessionmaker(bind=engine)
-    if sqlite_middleware._find_object(identifier, Session()) is None or not \
-            os.path.exists(CONF.default.upload_folder + "/" + url):
+    if sqlite_middleware._get_object(identifier, Session()) is None or not \
+            os.path.exists(CONF.default.upload_folder + "/" + url) or \
+            helper.is_expired(sqlite_middleware._get_object(\
+                identifier, Session()).timestamp, CONF.default.expire_time):
         abort(404)
 
     LOG.info("[Rendering] %s\n" % str(CONF.default.upload_folder + "/" + url))
