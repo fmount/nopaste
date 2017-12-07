@@ -24,6 +24,7 @@
 
 from flask import render_template, make_response, Response
 from bs4 import BeautifulSoup
+from config import CONF
 import logging
 
 LOG = logging.getLogger(__name__)
@@ -34,7 +35,16 @@ def render(resource, ua):
     content = open(resource).read()
 
     if "curl" not in str(ua):
+        LOG.info("[UA] Request rendering from %s " % str(ua))
         if bool(BeautifulSoup(content, "html.parser").find()):
             return Response(content, mimetype="text/html")
 
     return content
+
+
+def isexpired(t1):
+    """
+    TBD: Define the mode of setting link expired
+    """
+    print("The expire time is set to: %d\n" % int(CONF.default.expire_time))
+    pass

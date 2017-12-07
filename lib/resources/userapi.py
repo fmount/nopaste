@@ -31,6 +31,7 @@ import logging
 import json
 import sqlite_middleware
 from model import User
+from config import CONF
 
 LOG = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class UserAPI(Resource):
         if username is None or password is None:
             abort(400)  # missing arguments
        
-        engine = create_engine('sqlite:///weburl.db')
+        engine = create_engine(CONF.database.sql_engine_prefix + CONF.database.dbname)
         Session = sessionmaker(bind=engine)
         
         print(password)

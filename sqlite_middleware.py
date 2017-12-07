@@ -33,9 +33,14 @@ from sqlalchemy import MetaData, Column, Table, ForeignKey
 from sqlalchemy import Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, mapper, relation, sessionmaker
+from sqlalchemy.orm.exc import UnmappedInstanceError
 from model import Link, User
 
 from config import CONF
+import logging
+
+
+LOG = logging.getLogger(__name__)
 
 engine = create_engine(CONF.database.sql_engine_prefix + CONF.database.dbname)
 
@@ -71,11 +76,6 @@ def _get_user(username, session):
     return result
 
 
-#def _get_last_user(session):
-#    result = session.query(User).order_by(User.id.desc()).first()
-#    return result
-
-
 def _get_all_users(session):
     result = session.query(User).all()
     return result
@@ -88,16 +88,24 @@ def _get_last_object(session, Obj):
     return result.uuid
 
 
-def _get_all_objects(session):
-    result = session.query(Link).all()
-    return result
+def _get_all_objects(session, Obj):
+    try:
+        result = session.query(Obj).all()
+        return result
+    except UnmappedInstanceError as e:
+        LOG.err("[ERROR] Item not found")
+        return None
 
 
 def _delete_object(uid, session, Obj):
-    obj = session.query(Obj).filter_by(uuid=uid).first()
-    session.delete(obj)
-    session.commit()
-    return obj
+    try:
+        obj = session.query(Obj).filter_by(uuid=uid).first()
+        session.delete(obj)
+        session.commit()
+        return obj
+    except UnmappedInstanceError as e:
+        LOG.err("[ERROR] Item not found")
+        return None
 
 
 def _clear_table_by_name(Base, session, tname):

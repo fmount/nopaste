@@ -1,2 +1,5 @@
 *.vim
 *.pyc
+test/
+uploads/
+*.db*

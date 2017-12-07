@@ -57,7 +57,8 @@ Datamodel is made like this:
 
 LOG = logging.getLogger(__name__)
 auth = HTTPBasicAuth()
-engine = create_engine('sqlite:///weburl.db')
+
+engine = create_engine(CONF.database.sql_engine_prefix + CONF.database.dbname)
 
 
 class Links(Resource):
@@ -69,7 +70,7 @@ class Links(Resource):
     @auth.login_required
     def get(self):
         Session = sessionmaker(bind=engine)
-        items = sqlite_middleware._get_all_objects(Session())
+        items = sqlite_middleware._get_all_objects(Session(), Link)
         return jsonify("links", str(items))
 
 
@@ -87,11 +88,11 @@ class Links(Resource):
 
             l = Link(cur_id, CONF.default.uri + "/" + secure_filename(es), strftime("%Y-%m-%d %H:%M:%S", gmtime()))
             sqlite_middleware._insert_link(l, Session())
-            LOG.info("Generating tinyUrl: %s\n" % (CONF.default.uri + es))
+            LOG.info("[POST] - Generating tinyUrl: %s\n" % (CONF.default.uri + es))
 
             return l._tojson()
         except:
-            return "DB ERROR"
+            return "DB Operational Error"
 
     # Drop the entire db and delete all the created files
 
@@ -102,6 +103,7 @@ class Links(Resource):
         filelist = [f for f in os.listdir(CONF.default.upload_folder)]
 
         for f in filelist:
+            LOG.info("[DELETE] - %s" % str(CONF.default.upload_folder + "/" + f))
             os.remove(CONF.default.upload_folder + "/" + f)
 
         return "Cleaning db.."
@@ -123,6 +125,7 @@ class LinkAPI(Resource):
         Session = sessionmaker(bind=engine)
         item = sqlite_middleware._get_object(uuid, Session())
         if item is not None:
+            LOG.info("[GET] - %s\n" % str(item._tojson()))
             return item._tojson()
         abort(404)
 
@@ -133,8 +136,7 @@ class LinkAPI(Resource):
     @auth.login_required
     def delete(self, uuid):
         Session = sessionmaker(bind=engine)
-
         link = sqlite_middleware._delete_object(uuid, Session(), Link)
-
+        LOG.info("[DELETE] - %s" % str(CONF.default.upload_folder + "/" + Shorturl.toBase62(uuid)))
         os.remove(CONF.default.upload_folder + "/" + Shorturl.toBase62(uuid))
         return link._tojson()

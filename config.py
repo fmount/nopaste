@@ -38,11 +38,17 @@ default_opts = [
     cfg.StrOpt('upload_folder', default='uploads',
             help=('Where store/retrieve files')),
     
+    cfg.StrOpt('templates_folder', default='templates',
+            help=('Templates\' location')),
+    
     cfg.StrOpt('uri', default='http://localhost:5000',
             help=('Endpoint of the flask webserver')),
     
     cfg.BoolOpt('debug', default=False, \
-            help=('True enables, False disables debug mode'))
+            help=('True enables, False disables debug mode')),
+
+    cfg.IntOpt('expire_time', default=86400, \
+            help=('Expiring time of a link'))
 ]
 
 database_opts = [

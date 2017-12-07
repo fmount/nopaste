@@ -63,13 +63,13 @@ the more generic model called Link (you can find it on the model.py)
 
 LOG = logging.getLogger(__name__)
 
-app = Flask(__name__, static_folder="uploads", static_url_path="")
+app = Flask(__name__, static_folder=CONF.default.upload_folder, static_url_path="")
 api = Api(app)
 
 
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
-    jinja2.FileSystemLoader('templates'),
+    jinja2.FileSystemLoader(CONF.default.templates_folder),
 ])
 
 app.jinja_loader = my_loader
@@ -78,29 +78,33 @@ engine = sqlite_middleware._init_engine(Base)
 
 @app.errorhandler(400)
 def bad_request(error):
+    LOG.warn(jsonify({'error': 'Bad request'}))
     return make_response(jsonify({'error': 'Bad request'}), 400)
 
 
 @app.errorhandler(404)
 def not_found(error):
+    LOG.warn(jsonify({'error': 'Not found'}))
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @app.route('/', methods=['GET'])
 def home():
+    LOG.info("request for home.html")
     return make_response(render_template('home.html'))
 
 
 @app.route('/<url>')
 def show_me_thefile(url):
     identifier = Shorturl.toBase10(url)
-    print("Resolved identifier: %s\n" % str(identifier))
+    LOG.info("Resolved identifier: %s\n" % str(identifier))
 
     Session = sessionmaker(bind=engine)
     if sqlite_middleware._find_object(identifier, Session()) is None or not \
             os.path.exists(CONF.default.upload_folder + "/" + url):
         abort(404)
 
+    LOG.info("[Rendering] %s\n" % str(CONF.default.upload_folder + "/" + url))
     return helper.render((CONF.default.upload_folder + "/" + url), request.user_agent)
 
 
@@ -111,4 +115,4 @@ api.add_resource(UserAPI, "/api/users", endpoint="users")
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=CONF.default.debug)
