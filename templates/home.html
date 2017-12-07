@@ -1,0 +1,25 @@
+<html>
+<pre>
+nopaste(1)                          NOPASTE                          nopaste(1)
+
+NAME
+    nopaste: command line pastebin.
+
+SYNOPSIS
+    <command> | curl -F 'nopaste=<-' http://nopaste.us
+
+DESCRIPTION
+    add ?<lang> to resulting url for line numbers and syntax highlighting
+    use this form to paste from a browser
+
+EXAMPLES
+    ~# cat bin/examplefile | curl -F 'nopaste=@-' http://nopaste.me
+
+       http://nopaste.us/aXZI
+
+   ~# firefox http://nopaste.me/aXZI?py#n-7
+
+SEE ALSO
+    http://github.com/fmount/nopaste
+</pre>
+</html>
