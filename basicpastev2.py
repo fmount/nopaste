@@ -29,7 +29,7 @@ import os
 import sqlite_middleware
 from lib.resources.linksapi import Links, LinkAPI
 from model import Link, User, Base
-from lib.resources.userapi import UserAPI
+from lib.resources.userapi import UsersAPI, UserAPI
 import jinja2
 import json
 import uuid
@@ -101,10 +101,10 @@ def show_me_thefile(url):
     LOG.info("Resolved identifier: %s\n" % str(identifier))
     
     Session = sessionmaker(bind=engine)
-    if sqlite_middleware._get_object(identifier, Session()) is None or not \
+    if sqlite_middleware._get_object(identifier, Session(), Link) is None or not \
             os.path.exists(CONF.default.upload_folder + "/" + url) or \
             helper.is_expired(sqlite_middleware._get_object(\
-                identifier, Session()).timestamp, CONF.default.expire_time):
+                identifier, Session(), Link).timestamp, CONF.default.expire_time):
         abort(404)
 
     LOG.info("[Rendering] %s\n" % str(CONF.default.upload_folder + "/" + url))
@@ -113,7 +113,8 @@ def show_me_thefile(url):
 
 api.add_resource(Links, "/api/links")
 api.add_resource(LinkAPI, "/api/link/<int:uuid>", endpoint="link")
-api.add_resource(UserAPI, "/api/users", endpoint="users")
+api.add_resource(UsersAPI, "/api/users")
+api.add_resource(UserAPI, "/api/user/<int:uuid>", endpoint="user")
 
 
 

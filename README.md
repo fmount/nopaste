@@ -45,7 +45,15 @@ USER API
 
 * Create a user
 
-curl -i -X POST -H "Content-Type: application/json" -d '{"username":"fmount","password":"wtf"}' http://localhost:5000/api/users
+    curl -i -X POST -H "Content-Type: application/json" -d '{"username":"fmount","password":"fmount"}' http://localhost:5000/api/users
+
+* Get a user (admin only)
+
+    curl -i -u admin:admin -X GET http://localhost:5000/api/user/<ID>
+
+* Delete a user (admin only)
+
+    curl -i -u admin:admin -X DELETE http://localhost:5000/api/user/<ID>
 
 
 

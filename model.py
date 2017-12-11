@@ -29,6 +29,7 @@ from sqlalchemy.orm import backref, mapper, relation, sessionmaker
 from flask_restful import Api, Resource, reqparse, fields, marshal
 from flask import Flask, abort, jsonify
 from passlib.apps import custom_app_context as pwd_context
+from config import CONF
 import logging
 import json
 import sqlite_middleware
@@ -69,7 +70,7 @@ class User(Base):
 
     __tablename__ = "users"
 
-    uuid = Column(Integer, primary_key=True)
+    uuid = Column(Integer, autoincrement=True, primary_key=True)
     username = Column(String(32), index=True)
     password_hash = Column(String(128))
 
@@ -85,6 +86,13 @@ class User(Base):
 
     def verify_password(self, password):
         return pwd_context.verify(password, self.password_hash)
+
+
+    def isadmin(self):
+        if self.username == CONF.default.admin_user and \
+                self.verify_password(CONF.default.admin_password):
+            return True
+        return False
 
 
     def __repr__(self):

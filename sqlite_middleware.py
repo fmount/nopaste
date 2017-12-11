@@ -48,6 +48,10 @@ engine = create_engine(CONF.database.sql_engine_prefix + CONF.database.dbname)
 def _init_engine(Base):
     Base.metadata.bind = engine
     Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    if _get_user(CONF.default.admin_user, Session()) is None:
+        cur_id = _get_last_object(Session(), User)
+        _insert_user(User(cur_id, CONF.default.admin_user, CONF.default.admin_password), Session())
     return engine
 
 
@@ -66,8 +70,8 @@ def _find_objects(uid, session):
     return result
 
 
-def _get_object(uid, session):
-    result = session.query(Link).filter_by(uuid=uid).first()
+def _get_object(uid, session, Obj):
+    result = session.query(Obj).filter_by(uuid=uid).first()
     return result
 
 

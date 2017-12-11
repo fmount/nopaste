@@ -123,7 +123,7 @@ class LinkAPI(Resource):
 
     def get(self, uuid):
         Session = sessionmaker(bind=engine)
-        item = sqlite_middleware._get_object(uuid, Session())
+        item = sqlite_middleware._get_object(uuid, Session(), Link)
         if item is not None:
             LOG.info("[GET] - %s\n" % str(item._tojson()))
             return item._tojson()

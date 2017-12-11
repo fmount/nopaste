@@ -49,7 +49,13 @@ default_opts = [
             help=('True enables, False disables debug mode')),
 
     cfg.IntOpt('expire_time', default=86400, \
-            help=('Expiring time of a link'))
+            help=('Expiring time of a link')),
+    
+    cfg.StrOpt('admin_user', default='admin', \
+            help=('admin user to manage private resources')),
+
+    cfg.StrOpt('admin_password', default='password', \
+            help=('Admin password related to the admin user'))
 ]
 
 database_opts = [
