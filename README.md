@@ -70,5 +70,5 @@ KNOWN ISSUES
 
 TODO
 ===
-* Make a file / link available for a predefined timeframe window, then it expires and it's not available anymore.
-* Show/Delete user(s)
+* Put db in /var/lib/nopaste by default
+

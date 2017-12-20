@@ -1,0 +1,7 @@
+CHANGES
+=======
+
+* [+] Added support to crud for user objects [+] Added admin support both in conf and in the model [+] Added new user endpoint as resource
+* [+] Add expiring time support to be able to retrieve (or not) the link [+] Fix oslo config loading and nopaste.conf options [+] Add helper function to check expiring time [+] Make sqlite\_middleware more generic
+* [+] Added new options (expire) [+] More config parameters and Log parameter [+] Fix exception in sqlalchemy middleware
+* [+] First commit: Importing repo

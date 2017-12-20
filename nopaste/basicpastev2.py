@@ -117,6 +117,9 @@ api.add_resource(UsersAPI, "/api/users")
 api.add_resource(UserAPI, "/api/user/<int:uuid>", endpoint="user")
 
 
+def run():
+    app.run(host='127.0.0.1', debug=CONF.default.debug)
+
 
 if __name__ == '__main__':
-    app.run(debug=CONF.default.debug)
+    run()
